@@ -13,3 +13,4 @@ tensorflow,opencv,numpy
   加载完后，会出现在Video的窗口
   按 C 截取图片，按 Q 退出程序
   （注意每次截取4张以上，才有完整的标记数据文件）
+ 
