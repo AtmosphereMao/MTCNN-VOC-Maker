@@ -33,6 +33,7 @@ def main(videoNum):
         os.mkdir(FLAGS.save_path + "/"+FLAGS.dataset_name)
         os.mkdir(FLAGS.save_path + "/"+FLAGS.dataset_name+"/Annotations")
         os.mkdir(FLAGS.save_path + "/"+FLAGS.dataset_name+"/ImageSets")
+        os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main")
         os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/JPEGImages")
     except:
         pass
