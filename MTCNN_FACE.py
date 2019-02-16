@@ -15,7 +15,7 @@ FLAGS = tf.app.flags.FLAGS
 minsize = 20  # minimum size of face
 threshold = [0.6, 0.7, 0.7]  # three steps's threshold
 factor = 0.709  # scale factor
-gpu_memory_fraction = 1.0
+gpu_memory_fraction = 0.7 # 显卡内存占用限制
 
 print('Creating networks and loading parameters')
 
@@ -35,10 +35,15 @@ def main(videoNum):
         os.mkdir(FLAGS.save_path + "/"+FLAGS.dataset_name+"/ImageSets")
         os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main")
         os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/JPEGImages")
+        os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/Save")
+        os.mkdir(FLAGS.save_path + "/" + FLAGS.dataset_name + "/logs")
     except:
         pass
     cap = cv2.VideoCapture(videoNum)
+
     count = 0
+    if not cap.isOpened():
+        print("未检测到摄像头")
     while cap.isOpened():
         ok, img =cap.read()
         if not ok:
@@ -116,6 +121,7 @@ def main(videoNum):
                 ))
             position = []
             count += 1
+            print("第%d张" % count)
         if c & 0xFF == ord('q'):
             break
     if count > 2:
@@ -129,20 +135,32 @@ def main(videoNum):
         # val
         # 约trainval的50 %
         # num = np.random.randint(1, count+1, count)
-        num = random.sample(range(0, count+1), count)
-        with open(FLAGS.save_path + "/"+FLAGS.dataset_name+"/ImageSets/test.txt", 'w') as f:
-            for i in num[0 : int(count/2)]:
-                f.writelines(str(i)+"\n")
-        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/trainval.txt", 'w') as f:
-            for i in num[int(count/2): count]:
-                f.writelines(str(i)+"\n")
-        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/val.txt", 'w') as f:
-            for i in num[int(count/2): int(count/2) + int(count/4)]:
-                f.writelines(str(i)+"\n")
-        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/train.txt", 'w') as f:
-            for i in num[int(count/2) + int(count/4) : count]:
-                f.writelines(str(i)+"\n")
+        # num = random.sample(range(0, count+1), count)
+        # with open(FLAGS.save_path + "/"+FLAGS.dataset_name+"/ImageSets/Main/test.txt", 'w') as f:
+        #     for i in num[0 : int(count/2)]:
+        #         f.writelines(str(i)+"\n")
+        # with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/trainval.txt", 'w') as f:
+        #     for i in num[int(count/2): count]:
+        #         f.writelines(str(i)+"\n")
+        # with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/val.txt", 'w') as f:
+        #     for i in num[int(count/2): int(count/2) + int(count/4)]:
+        #         f.writelines(str(i)+"\n")
+        # with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/train.txt", 'w') as f:
+        #     for i in num[int(count/2) + int(count/4) : count]:
+        #         f.writelines(str(i)+"\n")
 
+        num = [i for i in range(count)]
+        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/trainval.txt", 'w') as f:
+            for i in num:
+                f.writelines(str(i)+"\n")
+        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/val.txt", 'w') as f:
+            for i in num:
+                if i % 2 == 0:
+                    f.writelines(str(i)+"\n")
+        with open(FLAGS.save_path + "/" + FLAGS.dataset_name + "/ImageSets/Main/train.txt", 'w') as f:
+            for i in num:
+                if i % 2 !=0:
+                    f.writelines(str(i)+"\n")
     cap.release()
     cv2.destroyAllWindows()
 
